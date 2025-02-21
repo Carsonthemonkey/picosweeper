@@ -71,12 +71,12 @@ end
 function draw_scores()
 	rectfill(32, 48, 95, 111, 6)
 	print("scores", 52, 50, 8)
-	y_offset = 60
+	y_offset = 56
 	pnum = 1
 	for _, score in pairs(scores) do
 		print(pnum .. ".", 38, y_offset, 13)
-		print(score.name, 48, y_offset, 13)
-		print(score.val, 82 - 4 * #tostr(score.val), y_offset, 13)
+		print(score.name, 55, y_offset, 13)
+		print(score.val, 91 - 4 * #tostr(score.val), y_offset, 13)
 		y_offset += 7
 		pnum += 1
 	end
