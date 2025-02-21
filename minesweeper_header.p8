@@ -203,11 +203,12 @@ end
 function draw_tile(x, y) 
 	spr_x = x * 8
 	spr_y = (y + 1) * 8
-	tile_dat = board[x][y]
+	is_flag = get_tile_dat(x, y, flag)
+	is_mine = get_tile_dat(x, y, mine)
 	if not get_tile_dat(x, y, open) then
 		spr(tile, spr_x, spr_y)
-		if get_tile_dat(x, y, flag) then
-			if game_state == GameState.END then
+		if is_flag then
+			if game_state == GameState.END and not is_mine then
 				spr(wrong_spr, spr_x, spr_y)
 			else
 				spr(flag_spr, spr_x, spr_y)
@@ -221,7 +222,7 @@ function draw_tile(x, y)
 		end	
 	end
 	is_mine = get_tile_dat(x, y, mine)
-	if game_state == GameState.END and is_mine then
+	if game_state == GameState.END and is_mine and not is_flag then
 		rectfill(spr_x, spr_y,
 							spr_x + 8, spr_y + 8,
 							8)
