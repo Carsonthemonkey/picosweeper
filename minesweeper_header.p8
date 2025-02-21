@@ -28,6 +28,7 @@ game_time = 0
 game_started = false
 game_over = false
 game_won = false
+start_time = 0
 -- constants --
 colmap = {
 	12,
@@ -277,7 +278,7 @@ end
 function draw_header()
 	print(tostr(num_mines), 0, 1, 8)
 	if not game_over then
-		game_time = flr(time())
+		game_time = flr(time()) - start_time
 	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
 	if game_over then
@@ -306,6 +307,7 @@ function _draw()
 		main_menu()
 		if btnp(🅾️) then
 			game_started = true
+			start_time = flr(time())
 		end
 	else
 		-- Game loop
