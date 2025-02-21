@@ -315,9 +315,11 @@ function _draw()
 	else
 		-- Game loop
 		draw_header()
-		handle_input()
 		draw_board()
-		draw_cursor()
+		if not game_over then
+			handle_input()
+			draw_cursor()
+		end
 	end
 end
 
