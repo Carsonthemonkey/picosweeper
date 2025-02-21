@@ -20,14 +20,18 @@ uncover = 0
 explode = 1
 
 -- data --
+-- enum
+GameState = {
+	START=0,
+	PLAYING=1,
+	END=2
+}
+game_state = GameState.START
 scores = nil
 board = {}
 curs_pos = {x=0, y=0}
 num_mines = 40
 game_time = 0
-game_started = false
-game_over = false
-game_won = false
 start_time = 0
 -- constants --
 colmap = {
@@ -178,7 +182,7 @@ function uncover_tile(x, y)
 		return
 	end
 	if get_tile_dat(x, y, mine) then
-		game_over = true
+		game_state = GameState.END
 		sfx(explode)
 		return
 	end
@@ -202,7 +206,7 @@ function draw_tile(x, y)
 	if not get_tile_dat(x, y, open) then
 		spr(tile, spr_x, spr_y)
 		if get_tile_dat(x, y, flag) then
-			if game_over then
+			if game_state == GameState.END then
 				spr(wrong_spr, spr_x, spr_y)
 			else
 				spr(flag_spr, spr_x, spr_y)
@@ -216,7 +220,7 @@ function draw_tile(x, y)
 		end	
 	end
 	is_mine = get_tile_dat(x, y, mine)
-	if game_over and is_mine then
+	if game_state == GameState.END and is_mine then
 		rectfill(spr_x, spr_y,
 							spr_x + 8, spr_y + 8,
 							8)
@@ -280,11 +284,11 @@ end
 
 function draw_header()
 	print(tostr(num_mines), 0, 1, 8)
-	if not game_over then
+	if not game_state == GameState.END then
 		game_time = flr(time()) - start_time
 	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
-	if game_over then
+	if game_state == GameState.END then
 		spr(😐_dead, 60, 0)
 	elseif btn(❎) then
 		spr(😐_scared, 60, 0)
@@ -306,20 +310,21 @@ end
 
 function _draw()
 	cls()
-	if not game_started then
+	if game_state == GameState.START then
 		main_menu()
 		if btnp(🅾️) then
-			game_started = true
+			game_state = GameState.PLAYING
 			start_time = flr(time())
 		end
-	else
+	elseif game_state == GameState.PLAYING then
 		-- Game loop
 		draw_header()
+		handle_input()
 		draw_board()
-		if not game_over then
-			handle_input()
-			draw_cursor()
-		end
+		draw_cursor()
+	elseif game_state == GameState.END then
+		draw_header()
+		draw_board()
 	end
 end
 
