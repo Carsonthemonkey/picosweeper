@@ -10,7 +10,7 @@ function init_scores(max_score_num, mem_offset)
     offset = mem_offset
     max_scores = max_score_num
     num_scores = dget(mem_offset)
-    for i=mem_offset + 1, num_scores * 4, 4 do
+    for i=mem_offset + 1, mem_offset + num_scores * 4, 4 do
         name = chr(dget(i)) .. chr(dget(i + 1)) .. chr(dget(i + 2))
         score = dget(i + 3)
         insert_score(name, score)
@@ -20,11 +20,12 @@ end
 
 -- Return true if the score would be in top saved scores
 function is_high_score(score)
-    if #scores == 0 then
+    if #scores < max_scores then
         return true
     end
     -- Compare to lowest
     lowest_idx = min(max_scores, #scores)
+    print(scores[lowest_idx].val)
     return score > scores[lowest_idx].val
 end
 
@@ -47,10 +48,10 @@ function save_scores()
         score = scores[(i / 4) + 1]
         ii = i + 1
         -- set score in memory
-        dset(offset + ii, sub(score.name, 0, 0))
-        dset(offset + ii + 1, sub(score.name, 1, 1))
-        dset(offset + ii + 2, sub(score.name, 1, 1))
-        dset(offset + i + 3, score.val)
+        dset(offset + ii, ord(sub(score.name, 1, 1)))
+        dset(offset + ii + 1, ord(sub(score.name, 2, 2)))
+        dset(offset + ii + 2, ord(sub(score.name, 3, 3)))
+        dset(offset + ii + 3, score.val)
     end
 end
 
@@ -60,16 +61,18 @@ end
 
 function insert_score(name, score)
     -- keep scores sorted while inserting
-    if #scores == 0 then
-        add(scores, {name=name, val=score})
-    else
-        for i, s in pairs(scores) do
-            if i > max_scores then
-                return
-            end
-            if score > s.val then
-                add(scores, {name=name, val=score}, i)
-            end
+    -- num_scores += 1
+    -- add(scores, {name=name, val=score})
+    i = 1
+    for s=1, #scores do
+        sc = scores[s]
+        if score > sc.val then
+            break
         end
+        i += 1
+    end
+    add(scores, {name=name, val=score}, i)
+    if #scores > max_scores then
+        deli(scores, #scores)
     end
 end

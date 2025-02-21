@@ -71,7 +71,6 @@ end
 function draw_scores()
 	rectfill(32, 48, 95, 111, 6)
 	print("scores", 52, 50, 8)
-
 	y_offset = 60
 	pnum = 1
 	for _, score in pairs(scores) do
@@ -295,7 +294,8 @@ end
 function _init()
 	cartdata("carsonmonkey_picosweeper_1")
 	init_scores(8, 0)
-	add_score("CAR", 100)
+	add_score("CAR", 200)
+	add_score("DAN", 400)
 	scores = get_scores()
 	init_board()
 end
