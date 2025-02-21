@@ -1,9 +1,12 @@
+lower_is_better = false
 num_scores = 0
 max_scores = 0
 scores = {}
 offset = 0
 -- Cartdata must be initialized first
-function init_scores(max_score_num, mem_offset)
+function init_scores(max_score_num, mem_offset, ascending)
+    -- cast to bool if nil
+    lower_is_better = not not ascending
     -- assert scores will fit in cartdata
     assert((max_scores * 4) + mem_offset + 1 < 64, "Failed to allocate in cart memory")
     scores = {}
@@ -17,24 +20,9 @@ function init_scores(max_score_num, mem_offset)
     end
 end
 
-
--- Return true if the score would be in top saved scores
-function is_high_score(score)
-    if #scores < max_scores then
-        return true
-    end
-    -- Compare to lowest
-    lowest_idx = min(max_scores, #scores)
-    print(scores[lowest_idx].val)
-    return score > scores[lowest_idx].val
-end
-
 -- Add score sorted and save scores to cartdata
 function add_score(name, score)
     assert(#name == 3, "Name must be 3 characters")
-    if not is_high_score(score) then
-        return
-    end
     insert_score(name, score)
     save_scores()
 end
@@ -66,7 +54,7 @@ function insert_score(name, score)
     i = 1
     for s=1, #scores do
         sc = scores[s]
-        if score > sc.val then
+        if score > sc.val and not lower_is_better or score < sc.val and lower_is_better then
             break
         end
         i += 1

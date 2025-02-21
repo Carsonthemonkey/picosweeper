@@ -293,7 +293,7 @@ end
 
 function _init()
 	cartdata("carsonmonkey_picosweeper_1")
-	init_scores(8, 0)
+	init_scores(8, 0, true)
 	add_score("CAR", 200)
 	add_score("DAN", 400)
 	scores = get_scores()
