@@ -239,6 +239,9 @@ function draw_cursor()
 end
 
 function toggle_flag(x, y)
+	if get_tile_dat(x, y, open) then
+		return
+	end
 	is_flagged = get_tile_dat(x, y, flag)
 	set_tile_dat(x, y, not is_flagged, flag)
 	if is_flagged then
@@ -262,7 +265,7 @@ function handle_input()
 	if btnp(➡️) then
 		curs_pos.x=min(curs_pos.x+1,15)
 	end
-	
+
 	--check for selection
 	if btn(❎) then
 		uncover_tile(curs_pos.x, curs_pos.y)
