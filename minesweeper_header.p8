@@ -273,9 +273,7 @@ function handle_input()
 	--check for selection
 	if btn(❎) then
 		uncover_tile(curs_pos.x, curs_pos.y)
-		if game_is_won() then
-			game_won = true
-		end
+		game_won = game_is_won()
 	end
 	if btnp(🅾️) then
 		toggle_flag(curs_pos.x, curs_pos.y)
