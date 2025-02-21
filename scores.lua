@@ -6,6 +6,7 @@ offset = 0
 function init_scores(max_score_num, mem_offset)
     -- assert scores will fit in cartdata
     assert((max_scores * 4) + mem_offset + 1 < 64, "Failed to allocate in cart memory")
+    scores = {}
     offset = mem_offset
     max_scores = max_score_num
     num_scores = dget(mem_offset)
@@ -19,8 +20,12 @@ end
 
 -- Return true if the score would be in top saved scores
 function is_high_score(score)
+    if #scores == 0 then
+        return true
+    end
     -- Compare to lowest
-    return score > scores[max_scores]
+    lowest_idx = min(max_scores, #scores)
+    return score > scores[lowest_idx].val
 end
 
 -- Add score sorted and save scores to cartdata
