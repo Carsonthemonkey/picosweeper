@@ -31,6 +31,7 @@ scores = nil
 board = {}
 curs_pos = {x=0, y=0}
 num_mines = 40
+remaining_mines = num_mines
 game_time = 0
 start_time = 0
 -- constants --
@@ -249,9 +250,9 @@ function toggle_flag(x, y)
 	is_flagged = get_tile_dat(x, y, flag)
 	set_tile_dat(x, y, not is_flagged, flag)
 	if is_flagged then
-		num_mines += 1
+		remaining_mines += 1
 	else
-		num_mines -= 1
+		remaining_mines -= 1
 	end
 end
 
@@ -274,27 +275,42 @@ function handle_input()
 	if btn(❎) then
 		uncover_tile(curs_pos.x, curs_pos.y)
 		game_won = game_is_won()
+		if game_won then
+			game_state = GameState.END
+		end
 	end
 	if btnp(🅾️) then
+		-- game_state = GameState.END
+		-- game_won = true
 		toggle_flag(curs_pos.x, curs_pos.y)
 	end
 end
 
 function draw_header()
-	print(tostr(num_mines), 0, 1, 8)
+	print(tostr(remaining_mines), 0, 1, 8)
 	if not (game_state == GameState.END) then
 		game_time = flr(time()) - start_time
 	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
 	if game_state == GameState.END then
-		spr(😐_dead, 60, 0)
+		if game_won then
+			spr(😐_cool, 60, 0)
+		else
+			spr(😐_dead, 60, 0)
+		end
 	elseif btn(❎) then
 		spr(😐_scared, 60, 0)
-	elseif game_won then
-		spr(😐_cool, 60, 0)
 	else
 		spr(😐, 60, 0)
 	end
+end
+
+function reset_game()
+	game_state = GameState.START
+	board = {}
+	init_board()
+	remaining_mines = num_mines
+	curs_pos = {x=0, y=0}
 end
 
 function _init()
@@ -323,6 +339,9 @@ function _draw()
 	elseif game_state == GameState.END then
 		draw_header()
 		draw_board()
+		if btnp(🅾️) then
+			reset_game()
+		end
 	end
 end
 
