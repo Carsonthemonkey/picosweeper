@@ -282,7 +282,7 @@ end
 
 function draw_header()
 	print(tostr(num_mines), 0, 1, 8)
-	if not game_state == GameState.END then
+	if not (game_state == GameState.END) then
 		game_time = flr(time()) - start_time
 	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
