@@ -51,6 +51,7 @@ colmap = {
 mine = 0
 open = 1
 flag = 2
+typed_name = ""
 
 function draw_title()
 	local offset = 25
@@ -306,7 +307,7 @@ end
 
 function end_screen()
 	rect_size_x = 95
-	rect_size_y = 40
+	rect_size_y = 45
 	half_x = rect_size_x / 2
 	half_y = rect_size_y / 2
 	rectfill(
@@ -326,10 +327,19 @@ function end_screen()
 	text = "you win!"
 	if is_top_score(game_time) then
 		text = "high score!"
+		name_input(64, 64 - half_y + 26)
 	end
 	print(text, 64 - (4 * #text) / 2, 64 - half_y + 9, 7)
-	msg = "press 🅾️ to restart"
-	print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+	-- msg = "press 🅾️ to restart"
+	-- print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+end
+
+function name_input(x, y)
+	typed_name = "aaa"
+	print("< _ a _ >", x - 18, y)
+	print("    ⬆️", x - 20, y - 7, 6)
+	print("    ⬇️", x - 20, y + 7, 6)
+	return false
 end
 
 function reset_game()
