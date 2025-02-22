@@ -281,8 +281,8 @@ function handle_input()
 		end
 	end
 	if btnp(🅾️) then
-		-- game_state = GameState.END
-		-- game_won = true
+		game_state = GameState.END
+		game_won = true
 		toggle_flag(curs_pos.x, curs_pos.y)
 	end
 end
@@ -304,6 +304,29 @@ function draw_header()
 	else
 		spr(😐, 60, 0)
 	end
+end
+
+function draw_end_screen()
+	rect_size_x = 60
+	rect_size_y = 40
+	half_x = rect_size_x / 2
+	half_y = rect_size_y / 2
+	rectfill(
+		64 - half_x,
+		64 - half_y,
+		64 + half_x,
+		64 + half_y,
+		0
+	)
+	rect(
+		64 - half_x + 2,
+		64 - half_y + 2,
+		64 + half_x - 2,
+		64 + half_y - 2,
+		7
+	)
+	text = "you win!"
+	print(text, 64 - (4 * #text) / 2, 64 - half_y + 9, 7)
 end
 
 function reset_game()
@@ -340,6 +363,7 @@ function _draw()
 	elseif game_state == GameState.END then
 		draw_header()
 		draw_board()
+		draw_end_screen()
 		if btnp(🅾️) then
 			reset_game()
 		end
