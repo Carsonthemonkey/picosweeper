@@ -27,6 +27,7 @@ GameState = {
 	END=2
 }
 game_state = GameState.START
+game_won = false
 scores = nil
 board = {}
 curs_pos = {x=0, y=0}
