@@ -304,7 +304,7 @@ function draw_header()
 	end
 end
 
-function draw_end_screen()
+function end_screen()
 	rect_size_x = 95
 	rect_size_y = 40
 	half_x = rect_size_x / 2
@@ -371,7 +371,7 @@ function _draw()
 	elseif game_state == GameState.END then
 		draw_header()
 		draw_board()
-		draw_end_screen()
+		end_screen()
 		if btnp(🅾️) then
 			reset_game()
 		end
