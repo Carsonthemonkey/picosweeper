@@ -307,7 +307,7 @@ function draw_header()
 end
 
 function draw_end_screen()
-	rect_size_x = 60
+	rect_size_x = 95
 	rect_size_y = 40
 	half_x = rect_size_x / 2
 	half_y = rect_size_y / 2
@@ -327,6 +327,8 @@ function draw_end_screen()
 	)
 	text = "you win!"
 	print(text, 64 - (4 * #text) / 2, 64 - half_y + 9, 7)
+	msg = "press 🅾️ to restart"
+	print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
 end
 
 function reset_game()
