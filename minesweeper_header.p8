@@ -290,9 +290,6 @@ end
 
 function draw_header()
 	print(tostr(remaining_mines), 0, 1, 8)
-	if not (game_state == GameState.END) then
-		game_time = flr(time()) - start_time
-	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
 	if game_state == GameState.END then
 		if game_won then
@@ -349,6 +346,10 @@ function _init()
 	init_board()
 end
 
+function update_time()
+	game_time = flr(time()) - start_time
+end
+
 function _draw()
 	cls()
 	if game_state == GameState.START then
@@ -359,6 +360,7 @@ function _draw()
 		end
 	elseif game_state == GameState.PLAYING then
 		-- Game loop
+		update_time()
 		draw_header()
 		handle_input()
 		draw_board()
