@@ -333,6 +333,15 @@ function end_screen()
 	-- print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
 end
 
+function range_chars(char_i, mini, maxi)
+	if char_i < mini then
+		char_i = maxi
+	elseif char_i > maxi then 
+		char_i = mini
+	end
+	return char_i
+end
+
 typed_name = {nil, nil, nil}
 active_chr = 1
 function name_input(x, y)
@@ -355,6 +364,35 @@ function name_input(x, y)
 	end
 	if btnp(⬅️) then
 		active_chr = max(active_chr - 1, 1)
+	end
+	
+	if btnp(⬇️) then
+		if typed_name[active_chr] then
+			char = chr(
+				range_chars(
+					ord(typed_name[active_chr]) + 1,
+					97,
+					122
+				)
+			)
+		else
+			char = "a"
+		end
+		typed_name[active_chr] = char
+	end
+	if btnp(⬆️) then
+		if typed_name[active_chr] then
+			char = chr(
+				range_chars(
+					ord(typed_name[active_chr]) - 1,
+					97,
+					122
+				)
+			)
+		else
+			char = "a"
+		end
+		typed_name[active_chr] = char
 	end
 end
 
