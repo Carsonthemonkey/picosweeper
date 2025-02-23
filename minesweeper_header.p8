@@ -283,8 +283,8 @@ function handle_input()
 		end
 	end
 	if btnp(🅾️) then
-		game_state = GameState.END
-		game_won = true
+		-- game_state = GameState.END
+		-- game_won = true
 		toggle_flag(curs_pos.x, curs_pos.y)
 	end
 end
@@ -325,7 +325,11 @@ function end_screen()
 		7
 	)
 	text = ""
-	if is_top_score(game_time) then
+	if not game_won then
+		text = "You lost."
+		msg = "press 🅾️ to restart"
+		print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+	elseif is_top_score(game_time) then
 		text = "high score!"
 		done = name_input(64, 64 - half_y + 26)
 		if done then
@@ -335,8 +339,8 @@ function end_screen()
 		end
 	else
 		text = "you win!"
-		msg = "press 🅾️ to restart"
-		print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+		-- msg = "press 🅾️ to restart"
+		-- print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
 		if btnp(🅾️) then
 			reset()
 		end
@@ -419,8 +423,6 @@ end
 function _init()
 	cartdata("carsonmonkey_picosweeper_1")
 	init_scores(8, 0, true)
-	add_score("CAR", 200)
-	add_score("DAN", 400)
 	scores = get_scores()
 	init_board()
 end
