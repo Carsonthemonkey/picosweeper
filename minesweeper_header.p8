@@ -35,6 +35,7 @@ num_mines = 40
 remaining_mines = num_mines
 game_time = 0
 start_time = 0
+typed_name = {nil, nil, nil}
 -- constants --
 colmap = {
 	12,
@@ -326,11 +327,19 @@ function end_screen()
 	text = ""
 	if is_top_score(game_time) then
 		text = "high score!"
-		name_input(64, 64 - half_y + 26)
+		done = name_input(64, 64 - half_y + 26)
+		if done then
+			name = typed_name[1] .. typed_name[2] .. typed_name[3]
+			add_score(name, game_time)
+			reset()
+		end
 	else
 		text = "you win!"
 		msg = "press 🅾️ to restart"
 		print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+		if btnp(🅾️) then
+			reset()
+		end
 	end
 	print(text, 64 - (4 * #text) / 2, 64 - half_y + 9, 7)
 end
@@ -344,7 +353,6 @@ function range_chars(char_i, mini, maxi)
 	return char_i
 end
 
-typed_name = {nil, nil, nil}
 active_chr = 1
 function name_input(x, y)
 	input_display = "< "
@@ -396,6 +404,7 @@ function name_input(x, y)
 		end
 		typed_name[active_chr] = char
 	end
+	return btnp(🅾️)
 end
 
 function reset_game()
@@ -404,6 +413,7 @@ function reset_game()
 	init_board()
 	remaining_mines = num_mines
 	curs_pos = {x=0, y=0}
+	typed_name = {nil, nil, nil}
 end
 
 function _init()
