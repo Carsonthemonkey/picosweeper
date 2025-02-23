@@ -51,7 +51,6 @@ colmap = {
 mine = 0
 open = 1
 flag = 2
-typed_name = ""
 
 function draw_title()
 	local offset = 25
@@ -334,12 +333,29 @@ function end_screen()
 	-- print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
 end
 
+typed_name = {nil, nil, nil}
+active_chr = 1
 function name_input(x, y)
-	typed_name = "aaa"
-	print("< _ a _ >", x - 18, y)
-	print("    ⬆️", x - 20, y - 7, 6)
-	print("    ⬇️", x - 20, y + 7, 6)
-	return false
+	input_display = "< "
+	for i=1,3 do 
+		input_display = input_display .. (typed_name[i] or "_") .. " "
+	end
+	input_display = input_display .. ">"
+	print(input_display, x - 18, y)
+	padding = ""
+	for i=1,active_chr do 
+		padding = padding .. "  "
+	end
+	-- print("  ⬆️", x - 20, y - 7, 6)
+	print(padding .. "⬆️", x - 20, y - 7, 6)
+	print(padding .. "⬇️", x - 20, y + 7, 6)
+	-- print("🅾️", x + 21, y, 8)
+	if btnp(➡️) then
+		active_chr = min(active_chr + 1, 3)
+	end
+	if btnp(⬅️) then
+		active_chr = max(active_chr - 1, 1)
+	end
 end
 
 function reset_game()
