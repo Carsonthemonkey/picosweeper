@@ -36,6 +36,7 @@ remaining_mines = num_mines
 game_time = 0
 start_time = 0
 typed_name = {nil, nil, nil}
+active_chr = 1
 -- constants --
 colmap = {
 	12,
@@ -357,7 +358,6 @@ function range_chars(char_i, mini, maxi)
 	return char_i
 end
 
-active_chr = 1
 function name_input(x, y)
 	input_display = "< "
 	for i=1,3 do 
@@ -418,6 +418,7 @@ function reset_game()
 	remaining_mines = num_mines
 	curs_pos = {x=0, y=0}
 	typed_name = {nil, nil, nil}
+	active_chr = 1
 end
 
 function _init()
