@@ -27,6 +27,7 @@ GameState = {
 	END=2
 }
 game_state = GameState.START
+game_won = false
 scores = nil
 board = {}
 curs_pos = {x=0, y=0}
@@ -34,6 +35,8 @@ num_mines = 40
 remaining_mines = num_mines
 game_time = 0
 start_time = 0
+typed_name = {nil, nil, nil}
+active_chr = 1
 -- constants --
 colmap = {
 	12,
@@ -289,9 +292,6 @@ end
 
 function draw_header()
 	print(tostr(remaining_mines), 0, 1, 8)
-	if not (game_state == GameState.END) then
-		game_time = flr(time()) - start_time
-	end
 	print(game_time, 128 - 4 * #tostr(game_time), 1, 8)
 	if game_state == GameState.END then
 		if game_won then
@@ -306,21 +306,130 @@ function draw_header()
 	end
 end
 
+function end_screen()
+	rect_size_x = 95
+	rect_size_y = 45
+	half_x = rect_size_x / 2
+	half_y = rect_size_y / 2
+	rectfill(
+		64 - half_x,
+		64 - half_y,
+		64 + half_x,
+		64 + half_y,
+		0
+	)
+	rect(
+		64 - half_x + 2,
+		64 - half_y + 2,
+		64 + half_x - 2,
+		64 + half_y - 2,
+		7
+	)
+	text = ""
+	if not game_won then
+		text = "You lost."
+		msg = "press 🅾️ to restart"
+		print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+	elseif is_top_score(game_time) then
+		text = "high score!"
+		done = name_input(64, 64 - half_y + 26)
+		if done then
+			name = typed_name[1] .. typed_name[2] .. typed_name[3]
+			add_score(name, game_time)
+			reset()
+		end
+	else
+		text = "you win!"
+		-- msg = "press 🅾️ to restart"
+		-- print(msg, 64 - (4 * #msg) / 2, 64 - half_y + 22, 6)
+		if btnp(🅾️) then
+			reset()
+		end
+	end
+	print(text, 64 - (4 * #text) / 2, 64 - half_y + 9, 7)
+end
+
+function range_chars(char_i, mini, maxi)
+	if char_i < mini then
+		char_i = maxi
+	elseif char_i > maxi then 
+		char_i = mini
+	end
+	return char_i
+end
+
+function name_input(x, y)
+	input_display = "< "
+	for i=1,3 do 
+		input_display = input_display .. (typed_name[i] or "_") .. " "
+	end
+	input_display = input_display .. ">"
+	print(input_display, x - 18, y)
+	padding = ""
+	for i=1,active_chr do 
+		padding = padding .. "  "
+	end
+	-- print("  ⬆️", x - 20, y - 7, 6)
+	print(padding .. "⬆️", x - 20, y - 7, 6)
+	print(padding .. "⬇️", x - 20, y + 7, 6)
+	-- print("🅾️", x + 21, y, 8)
+	if btnp(➡️) then
+		active_chr = min(active_chr + 1, 3)
+	end
+	if btnp(⬅️) then
+		active_chr = max(active_chr - 1, 1)
+	end
+	
+	if btnp(⬇️) then
+		if typed_name[active_chr] then
+			char = chr(
+				range_chars(
+					ord(typed_name[active_chr]) + 1,
+					97,
+					122
+				)
+			)
+		else
+			char = "a"
+		end
+		typed_name[active_chr] = char
+	end
+	if btnp(⬆️) then
+		if typed_name[active_chr] then
+			char = chr(
+				range_chars(
+					ord(typed_name[active_chr]) - 1,
+					97,
+					122
+				)
+			)
+		else
+			char = "a"
+		end
+		typed_name[active_chr] = char
+	end
+	return btnp(🅾️)
+end
+
 function reset_game()
 	game_state = GameState.START
 	board = {}
 	init_board()
 	remaining_mines = num_mines
 	curs_pos = {x=0, y=0}
+	typed_name = {nil, nil, nil}
+	active_chr = 1
 end
 
 function _init()
 	cartdata("carsonmonkey_picosweeper_1")
 	init_scores(8, 0, true)
-	add_score("CAR", 200)
-	add_score("DAN", 400)
 	scores = get_scores()
 	init_board()
+end
+
+function update_time()
+	game_time = flr(time()) - start_time
 end
 
 function _draw()
@@ -333,6 +442,7 @@ function _draw()
 		end
 	elseif game_state == GameState.PLAYING then
 		-- Game loop
+		update_time()
 		draw_header()
 		handle_input()
 		draw_board()
@@ -340,6 +450,7 @@ function _draw()
 	elseif game_state == GameState.END then
 		draw_header()
 		draw_board()
+		end_screen()
 		if btnp(🅾️) then
 			reset_game()
 		end

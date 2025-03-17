@@ -43,6 +43,14 @@ function save_scores()
     end
 end
 
+function is_top_score(score)
+    if #scores < max_scores then
+        return true
+    end
+    worst = scores[max_scores].val
+    return (score > worst and not lower_is_better) or (score < worst and lower_is_better)
+end
+
 function get_scores()
     return scores
 end
